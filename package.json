@@ -1,0 +1,38 @@
+{
+  "name": "@epsor/logger",
+  "version": "1.0.0",
+  "description": "Epsor logging superset over Winston for console and elasticsearch",
+  "main": "dist/index.js",
+  "private": false,
+  "directories": {
+    "src": "src"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "babel src -d dist",
+    "build:watch": "babel src -d dist --watch",
+    "prepare": "npm run build",
+    "start": "babel src -d dist --watch",
+    "clean": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Epsor/logger.git"
+  },
+  "author": "Epsor <tech@epsor.fr>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Epsor/logger/issues"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "@elastic/elasticsearch": "^7.1.0",
+    "winston": "^3.2.1",
+    "winston-elasticsearch": "^0.7.12"
+  },
+  "homepage": "https://github.com/Epsor/logger#readme"
+}

@@ -1,0 +1,12 @@
+### IDE-specific files
+.idea/*
+
+### Packages commonly-ignored directories
+node_modules/
+dist
+
+### macOS template
+# General
+**/.DS_Store
+.AppleDouble
+.LSOverride

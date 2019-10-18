@@ -1,5 +1,6 @@
 import winston from 'winston';
 import ElasticsearchTransport from 'winston-elasticsearch';
+import SentryTransport from 'winston-raven-sentry';
 import { Client } from '@elastic/elasticsearch';
 
 const useElasticsearch =
@@ -8,6 +9,8 @@ const useElasticsearch =
   process.env.ELASTICSEARCH_PASSWORD &&
   process.env.SERVICE_NAME &&
   process.env.ENVIRONMENT;
+
+const useSentry = process.env.SENTRY_DSN && process.env.SERVICE_NAME && process.env.ENVIRONMENT;
 
 const isTest = process.env.NODE_ENV === 'test';
 
@@ -43,6 +46,18 @@ const esTransportOptions = {
   },
 };
 
+const sentryTransportOptions = {
+  dsn: process.env.SENTRY_DSN,
+  logger: 'winston-sentry',
+  server_name: process.env.SERVICE_NAME,
+  environment: process.env.ENVIRONMENT,
+  level: 'error',
+  install: true,
+  config: {
+    captureUnhandledRejections: true,
+  },
+};
+
 const logger = winston.createLogger({
   level: 'info',
   transports: [
@@ -50,12 +65,19 @@ const logger = winston.createLogger({
       ? [new winston.transports.Console()]
       : [new winston.transports.File({ filename: '/dev/null' })]),
     ...(useElasticsearch ? [new ElasticsearchTransport(esTransportOptions)] : []),
+    ...(!isTest && useSentry ? [new SentryTransport(sentryTransportOptions)] : []),
   ],
 });
 
 if (!useElasticsearch) {
   logger.info(
-    'Logs are not sent to Elasticsearch. Ensure all the required envrionment variables are set.',
+    'Logs are not sent to Elasticsearch. Ensure all the required environment variables are set.',
+  );
+}
+
+if (!useSentry) {
+  logger.info(
+    'Logs are not sent to Sentry. Ensure all the required environment variables are set.',
   );
 }
 

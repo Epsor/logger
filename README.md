@@ -17,6 +17,7 @@ This is the custom logger package for Epsor. Use it as soon as you need some log
 - `ELASTICSEARCH_URL`, `ELASTICSEARCH_USER` and `ELASTICSEARCH_PASSWORD` to identify against Elasticsearch node,
 - `SERVICE_NAME` to identify which part of the app sent the log
 - `ENVIRONMENT`
+- `SENTRY_DSN` the Sentry's data source name to push error logs to Sentry
 
 ```js
 import logger from '@epsor/logger';
@@ -30,6 +31,7 @@ Logs are pushed:
 
 - in your console,
 - in your Elasticsearch instance (log levels info or less only, see [log levels](#log-levels) for more information).
+- in [Sentry](https://sentry.io/)
 
 ## Log levels
 
@@ -46,7 +48,7 @@ Logger uses the npm logging levels,  prioritized from 0 to 5 :
 }
 ```
 
-All log levels are logged to your console, but only log levels info or less are pushed to Elasticsearch. It allows developer to add logs for local debug purpose only.
+All log levels are logged to your console, but only log levels info or less are pushed to Elasticsearch, and only error logs are pushed to Sentry. It allows developer to add logs for local debug purpose only.
 
 ## Guidelines
 

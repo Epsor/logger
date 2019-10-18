@@ -1,6 +1,6 @@
 import winston from 'winston';
 import ElasticsearchTransport from 'winston-elasticsearch';
-import SentryTransport from 'winston-raven-sentry';
+import SentryTransport from 'winston-sentry-raven-transport';
 import { Client } from '@elastic/elasticsearch';
 
 const useElasticsearch =
@@ -48,6 +48,7 @@ const esTransportOptions = {
 
 const sentryTransportOptions = {
   dsn: process.env.SENTRY_DSN,
+  name: 'winston-sentry',
   logger: 'winston-sentry',
   server_name: process.env.SERVICE_NAME,
   environment: process.env.ENVIRONMENT,

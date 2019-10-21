@@ -1,6 +1,6 @@
 {
   "name": "@epsor/logger",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Epsor logging superset over Winston for console and elasticsearch",
   "main": "dist/index.js",
   "private": false,
@@ -35,5 +35,6 @@
     "winston-elasticsearch": "^0.7.12",
     "winston-sentry-raven-transport": "^1.0.3"
   },
-  "homepage": "https://github.com/Epsor/logger#readme"
+  "homepage": "https://github.com/Epsor/logger#readme",
+  "types": "index.d.ts"
 }

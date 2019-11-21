@@ -1,6 +1,7 @@
 import winston from 'winston';
 import ElasticsearchTransport from 'winston-elasticsearch';
 import SentryTransport from 'winston-sentry-raven-transport';
+import { consoleFormat } from 'winston-console-format';
 import { Client } from '@elastic/elasticsearch';
 
 const useElasticsearch =
@@ -63,7 +64,24 @@ const logger = winston.createLogger({
   level: 'info',
   transports: [
     ...(!isTest
-      ? [new winston.transports.Console()]
+      ? [new winston.transports.Console({
+        format: winston.format.combine(
+          winston.format.colorize({ all: true }),
+          winston.format.padLevels(),
+          consoleFormat({
+            showMeta: true,
+            metaStrip: ['service'],
+            inspectOptions: {
+              depth: Infinity,
+              colors: true,
+              maxArrayLength: Infinity,
+              breakLength: 120,
+              compact: Infinity,
+            }
+          }
+          )
+        )
+      })]
       : [new winston.transports.File({ filename: '/dev/null' })]),
     ...(useElasticsearch ? [new ElasticsearchTransport(esTransportOptions)] : []),
     ...(!isTest && useSentry ? [new SentryTransport(sentryTransportOptions)] : []),

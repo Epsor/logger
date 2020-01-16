@@ -52,11 +52,14 @@ const sentryTransportOptions = {
   name: 'winston-sentry',
   logger: 'winston-sentry',
   server_name: process.env.SERVICE_NAME,
-  environment: process.env.ENVIRONMENT,
   level: 'error',
   install: true,
   config: {
     captureUnhandledRejections: true,
+    environment: process.env.ENVIRONMENT,
+    tags: {
+      environment: process.env.ENVIRONMENT,
+    },
   },
 };
 

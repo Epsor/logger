@@ -1,9 +1,10 @@
-import winston from 'winston';
-import ElasticsearchTransport from 'winston-elasticsearch';
-import SentryTransport from 'winston-sentry-raven-transport';
-import { consoleFormat } from 'winston-console-format';
-import { Client } from '@elastic/elasticsearch';
+import winston from "winston";
+import ElasticsearchTransport from "winston-elasticsearch";
+import SentryTransport from "winston-sentry-raven-transport";
+import { consoleFormat } from "winston-console-format";
+import { Client } from "@elastic/elasticsearch";
 
+const logLevel = process.env.LOG_VERBOSE_LEVEL || "info";
 const useElasticsearch =
   process.env.ELASTICSEARCH_URL &&
   process.env.ELASTICSEARCH_USER &&
@@ -13,58 +14,58 @@ const useElasticsearch =
 
 const useSentry = process.env.SENTRY_DSN && process.env.SERVICE_NAME && process.env.ENVIRONMENT;
 
-const isTest = process.env.NODE_ENV === 'test';
+const isTest = process.env.NODE_ENV === "test";
 
 const esClient = new Client({
   node: `https://${process.env.ELASTICSEARCH_USER}:${process.env.ELASTICSEARCH_PASSWORD}@${process.env.ELASTICSEARCH_URL}`,
   maxRetries: 5,
-  requestTimeout: 30000,
+  requestTimeout: 30000
 });
 
 const esTransportOptions = {
-  level: 'info',
+  level: logLevel,
   client: esClient,
   transformer: ({
     timestamp = new Date().toISOString(),
     level,
     message,
-    meta: { user, ...meta },
+    meta: { user, ...meta }
   }) => {
     return {
-      '@timestamp': timestamp,
+      "@timestamp": timestamp,
       severity: level,
       message,
       user: user && {
         email: user.email,
         id: user.id,
         firstname: user.firstname,
-        lastname: user.lastname,
+        lastname: user.lastname
       },
       fields: meta,
       service: process.env.SERVICE_NAME,
-      environment: process.env.ENVIRONMENT,
+      environment: process.env.ENVIRONMENT
     };
-  },
+  }
 };
 
 const sentryTransportOptions = {
   dsn: process.env.SENTRY_DSN,
-  name: 'winston-sentry',
-  logger: 'winston-sentry',
+  name: "winston-sentry",
+  logger: "winston-sentry",
   server_name: process.env.SERVICE_NAME,
-  level: 'error',
+  level: "error",
   install: true,
   config: {
     captureUnhandledRejections: true,
     environment: process.env.ENVIRONMENT,
     tags: {
-      environment: process.env.ENVIRONMENT,
-    },
-  },
+      environment: process.env.ENVIRONMENT
+    }
+  }
 };
 
 const logger = winston.createLogger({
-  level: 'info',
+  level: logLevel,
   transports: [
     ...(!isTest
       ? [
@@ -72,36 +73,36 @@ const logger = winston.createLogger({
             format: winston.format.combine(
               winston.format.colorize({ all: true }),
               winston.format.padLevels(),
-              winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+              winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
               consoleFormat({
                 showMeta: true,
-                metaStrip: ['service'],
+                metaStrip: ["service"],
                 inspectOptions: {
                   depth: Infinity,
                   colors: true,
                   maxArrayLength: Infinity,
                   breakLength: 120,
-                  compact: Infinity,
-                },
-              }),
-            ),
-          }),
+                  compact: Infinity
+                }
+              })
+            )
+          })
         ]
-      : [new winston.transports.File({ filename: '/dev/null' })]),
+      : [new winston.transports.File({ filename: "/dev/null" })]),
     ...(useElasticsearch ? [new ElasticsearchTransport(esTransportOptions)] : []),
-    ...(!isTest && useSentry ? [new SentryTransport(sentryTransportOptions)] : []),
-  ],
+    ...(!isTest && useSentry ? [new SentryTransport(sentryTransportOptions)] : [])
+  ]
 });
 
 if (!useElasticsearch) {
   logger.info(
-    'Logs are not sent to Elasticsearch. Ensure all the required environment variables are set.',
+    "Logs are not sent to Elasticsearch. Ensure all the required environment variables are set."
   );
 }
 
 if (!useSentry) {
   logger.info(
-    'Logs are not sent to Sentry. Ensure all the required environment variables are set.',
+    "Logs are not sent to Sentry. Ensure all the required environment variables are set."
   );
 }
 

@@ -4,6 +4,7 @@ import SentryTransport from 'winston-sentry-raven-transport';
 import { consoleFormat } from 'winston-console-format';
 import { Client } from '@elastic/elasticsearch';
 
+const logLevel = process.env.LOG_VERBOSE_LEVEL || 'info';
 const useElasticsearch =
   process.env.ELASTICSEARCH_URL &&
   process.env.ELASTICSEARCH_USER &&
@@ -22,7 +23,7 @@ const esClient = new Client({
 });
 
 const esTransportOptions = {
-  level: 'info',
+  level: logLevel,
   client: esClient,
   transformer: ({
     timestamp = new Date().toISOString(),
@@ -64,7 +65,7 @@ const sentryTransportOptions = {
 };
 
 const logger = winston.createLogger({
-  level: 'info',
+  level: logLevel,
   transports: [
     ...(!isTest
       ? [

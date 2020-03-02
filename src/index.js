@@ -70,6 +70,7 @@ const logger = winston.createLogger({
     ...(!isTest
       ? [
           new winston.transports.Console({
+            level: logLevel,
             format: winston.format.combine(
               winston.format.colorize({ all: true }),
               winston.format.padLevels(),

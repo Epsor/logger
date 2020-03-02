@@ -32,7 +32,7 @@
     "@babel/cli": "^7.5.0",
     "@babel/core": "^7.5.4",
     "@babel/preset-env": "^7.5.4",
-    "@elastic/elasticsearch": "^7.1.0",
+    "@elastic/elasticsearch": "^7.6.0",
     "winston": "^3.2.1",
     "winston-console-format": "^1.0.5",
     "winston-elasticsearch": "^0.7.12",
